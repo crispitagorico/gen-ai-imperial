@@ -16,6 +16,14 @@ A 5-week course (3h lecture per week) covering the mathematics of LLMs, RL train
 | 4 | Introduction to Diffusion Models (Part 1) | `diffusion_models.pdf` |
 | 5 | Introduction to Diffusion Models (Part 2) | `diffusion_models.pdf` |
 
-## Assessment 
+## Code
+
+Each week has an accompanying Jupyter notebook with worked examples and implementations. Install dependencies with:
+
+```bash
+pip install -r code/requirements.txt
+```
+
+## Assessment
 
 Assessment is via a single final coursework which counts for 100% of grade. Details to be released in due course.
