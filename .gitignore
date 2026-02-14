@@ -11,6 +11,7 @@ slides/course/week3.pdf
 slides/course/week4.pdf
 slides/course/week5.pdf
 slides/course/coursework.pdf
+slides/course/build/
 
 # code/requirements.txt
 code/week1/week1_llm_math.ipynb
@@ -21,3 +22,4 @@ code/week4/week4_diffusion_part1.ipynb
 code/week5/week5_diffusion_part2.ipynb
 code/week3/week3_finance_nlp.ipynb
 code/week5/sde_samplers.py
+.vscode/settings.json
