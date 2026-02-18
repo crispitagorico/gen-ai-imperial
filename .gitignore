@@ -13,7 +13,7 @@ slides/course/week5.pdf
 slides/course/coursework.pdf
 slides/course/build/
 
-code/requirements.txt
+# code/requirements.txt
 code/week1/week1_llm_math.ipynb
 code/week2/week2_rl_training.ipynb
 code/week3/finance_utils.py

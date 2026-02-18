@@ -18,11 +18,25 @@ A 5-week course (3h lecture per week) covering the mathematics of LLMs, RL train
 
 ## Code
 
-Each week has an accompanying Jupyter notebook with worked examples and implementations. Install dependencies with:
+Each week has an accompanying Jupyter notebook with worked examples and implementations.
+
+### Setup
 
 ```bash
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -r code/requirements.txt
 ```
+
+### Running notebooks
+
+```bash
+source .venv/bin/activate
+jupyter notebook
+```
+
+Then navigate to the relevant `code/weekN/` folder and open the notebook.
+
 
 ## Assessment
 
