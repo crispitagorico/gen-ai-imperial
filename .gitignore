@@ -1,17 +1,16 @@
-slides/sample/
-slides/course/coursework.tex
-slides/course/week1.tex
-slides/course/week2.tex
-slides/course/week3.tex
-slides/course/week4.tex
-slides/course/week5.tex
-# slides/course/week1.pdf
-slides/course/week2.pdf
-slides/course/week3.pdf
-slides/course/week4.pdf
-slides/course/week5.pdf
-slides/course/coursework.pdf
-slides/course/build/
+slides/coursework.tex
+slides/week1.tex
+slides/week2.tex
+slides/week3.tex
+slides/week4.tex
+slides/week5.tex
+# slides/week1.pdf
+slides/week2.pdf
+slides/week3.pdf
+slides/week4.pdf
+slides/week5.pdf
+slides/coursework.pdf
+slides/build/
 
 # code/requirements.txt
 # code/week1/week1_llm_math.ipynb
