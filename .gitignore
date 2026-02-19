@@ -5,7 +5,7 @@ slides/course/week2.tex
 slides/course/week3.tex
 slides/course/week4.tex
 slides/course/week5.tex
-slides/course/week1.pdf
+# slides/course/week1.pdf
 slides/course/week2.pdf
 slides/course/week3.pdf
 slides/course/week4.pdf
@@ -14,7 +14,7 @@ slides/course/coursework.pdf
 slides/course/build/
 
 # code/requirements.txt
-code/week1/week1_llm_math.ipynb
+# code/week1/week1_llm_math.ipynb
 code/week2/week2_rl_training.ipynb
 code/week3/finance_utils.py
 code/week4/diffusion.py
