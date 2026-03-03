@@ -1,0 +1,13 @@
+\beamer@slide {eq:pretrain_loss}{5}
+\beamer@slide {eq:sft_loss}{8}
+\beamer@slide {eq:lora_forward}{10}
+\beamer@slide {eq:kl_objective}{18}
+\beamer@slide {eq:log_derivative}{20}
+\beamer@slide {eq:reinforce}{22}
+\beamer@slide {eq:baseline}{24}
+\beamer@slide {eq:td_residual}{26}
+\beamer@slide {eq:gae}{27}
+\beamer@slide {eq:trpo}{30}
+\beamer@slide {eq:ppo_clip}{33}
+\beamer@slide {eq:grpo_advantage}{36}
+\beamer@slide {eq:grpo_loss}{36}
