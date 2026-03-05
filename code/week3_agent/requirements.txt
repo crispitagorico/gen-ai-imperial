@@ -1,0 +1,5 @@
+yfinance>=0.2.31
+finnhub-python>=2.4.19
+transformers>=4.36.0
+torch>=2.1.0
+mcp>=1.0.0
