@@ -1,8 +1,9 @@
 slides/week1.tex
 slides/week2.tex
 slides/week3.tex
-slides/weeks4_5.tex
 code/week3_agent/__pycache__
 .vscode/settings.json
 coursework.tex
-# coursework.pdf
+slides/week5.tex
+slides/week5.pdf
+slides/week4.tex
