@@ -52,7 +52,7 @@ the paper trade. Claude sees the result and reports back. This is the same
 1. Open **VS Code**
 2. Make sure you are on the **latest version of VS Code**
 3. Go to **Extensions** (⇧⌘X / Ctrl+Shift+X), search **"Claude Code"**, and install the Claude Code extension
-4. Open **VS Code Chat** (`Ctrl+Shift+I`)
+4. Open **VS Code Chat** (⇧⌘I / Ctrl+Shift+I)
 5. Set **Session Target** to **Claude**
 6. Sign in with your **GitHub account** in VS Code if you have not already (Imperial students should have **GitHub Copilot Pro**, and Claude requests count toward that allowance)
 
