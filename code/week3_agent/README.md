@@ -1,11 +1,11 @@
-# Tutorial: Build an AI Trading Agent with Claude Code
+# Tutorial: Build an AI Trading Agent with VS Code Chat (Claude)
 
 
 > You will build a trading agent that can fetch market data, analyse news
 > sentiment, compute technical indicators, and execute paper trades —
-> all by talking to it in plain English through Claude Code.
+> all by talking to it in plain English through VS Code Chat with Claude.
 >
-> There is no custom UI. Claude Code **is** the interface.
+> There is no custom UI. VS Code Chat **is** the interface.
 
 ---
 
@@ -13,7 +13,7 @@
 
 ```
 ┌─────────────────────────────────────────────┐
-│  You  ←→  Claude Code (VS Code extension)   │
+│  You  ←→  VS Code Chat (Session: Claude)    │
 │              │                               │
 │              │  MCP protocol (stdio)         │
 │              ▼                               │
@@ -47,13 +47,14 @@ the paper trade. Claude sees the result and reports back. This is the same
 
 ## Part 0 — Setup (15 min)
 
-### 0.1 Install Claude Code in VS Code
+### 0.1 Set up VS Code Chat with Claude
 
 1. Open **VS Code**
-2. Go to **Extensions** (⇧⌘X / Ctrl+Shift+X)
-3. Search **"Claude Code"** and install the Anthropic extension
-4. Open the Claude Code panel (look for the Claude icon in the sidebar)
-5. Sign in with your Anthropic account (the free tier is sufficient)
+2. Make sure you are on the **latest version of VS Code**
+3. Go to **Extensions** (⇧⌘X / Ctrl+Shift+X), search **"Claude Code"**, and install the Claude Code extension
+4. Open **VS Code Chat** (`Ctrl+Shift+I`)
+5. Set **Session Target** to **Claude**
+6. Sign in with your **GitHub account** in VS Code if you have not already (Imperial students should have **GitHub Copilot Pro**, and Claude requests count toward that allowance)
 
 ### 0.2 Get a Finnhub API key
 
@@ -80,25 +81,25 @@ pip install -r requirements.txt
 > **Note:** The first run of `analyze_sentiment` will download the FinBERT
 > model (~400 MB). This happens once.
 
-### 0.5 Register the MCP server with Claude Code
+### 0.5 Register the MCP server
 
-This is the key step. You tell Claude Code: "there is a Python server that
+This is the key step. You tell Claude in VS Code Chat: "there is a Python server that
 exposes trading tools — here is how to run it."
 
 In the VS Code terminal, run (replace the paths and API key):
 
 ```bash
-claude mcp add \
-  --transport stdio \
-  --env FINNHUB_API_KEY=YOUR_KEY_HERE \
-  --scope user \
-  trading-agent \
-  -- /path/to/gen-ai-imperial/code/week3_agent/.venv/bin/python \
-     /path/to/gen-ai-imperial/code/week3_agent/trading_server.py
+claude mcp add `
+  --transport stdio `
+  --env FINNHUB_API_KEY=crpia01r01qsek0frl20crpia01r01qsek0frl2g `
+  --scope user `
+  trading-agent `
+  -- "C:\Users\chris\Anaconda\envs\math70065\python.exe" `
+     "C:\Users\chris\VSCodeProjects\gen-ai-imperial\code\week3_agent\trading_server.py"
 ```
 
 > **What this does:** Registers an MCP server named `trading-agent` that
-> Claude Code will launch as a subprocess. Claude can now discover and call
+> Claude will launch as a subprocess. Claude can now discover and call
 > all 9 tools defined in `trading_server.py`.
 
 Verify it worked:
@@ -107,13 +108,13 @@ Verify it worked:
 claude mcp list
 ```
 
-You should see `trading-agent` in the output. Now **restart Claude Code**
-in VS Code (close and reopen the panel, or reload the window with ⇧⌘P →
+You should see `trading-agent` in the output. Now **restart VS Code Chat**
+in VS Code (close and reopen Chat, or reload the window with ⇧⌘P →
 "Developer: Reload Window").
 
 ### 0.6 Smoke test
 
-In the Claude Code chat, type:
+In VS Code Chat (with Session Target set to Claude), type:
 
 ```
 What tools do you have available from the trading-agent server?
@@ -126,7 +127,7 @@ Claude should list all 9 tools. If it does — you are ready.
 ## Part 1 — Market Data (15 min)
 
 Now you will interact with your trading agent. Everything below happens in
-the Claude Code chat inside VS Code.
+VS Code Chat inside VS Code.
 
 ### Exercise 1.1 — Fetch price history
 
@@ -366,7 +367,7 @@ from scratch.
 | `indicators.py` | RSI, MACD, Bollinger | Classical quant signals the agent reasons over |
 | `paper_trading.py` | Portfolio + order execution | The "act" step in the agent loop |
 | `backtest.py` | Historical strategy testing | Statistical validation before deployment |
-| Claude Code | The LLM agent (planning + reasoning) | **LLM Agent** = tool use + planning + memory |
+| Claude (in VS Code Chat) | The LLM agent (planning + reasoning) | **LLM Agent** = tool use + planning + memory |
 
 ---
 
@@ -374,7 +375,7 @@ from scratch.
 
 | Problem | Fix |
 |---------|-----|
-| "No tools found" | Restart Claude Code after `claude mcp add`. Check `claude mcp list`. |
+| "No tools found" | Restart VS Code Chat after `claude mcp add`. Check `claude mcp list`. |
 | "FINNHUB_API_KEY not set" | Re-run `claude mcp add` with `--env FINNHUB_API_KEY=your_key`. |
 | Slow first sentiment call | FinBERT download (~400 MB) on first use. Subsequent calls are fast. |
 | "Insufficient cash" | Your paper portfolio started with $100K. Check `get_portfolio`. |
