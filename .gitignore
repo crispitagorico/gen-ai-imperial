@@ -6,3 +6,8 @@ code/week3_agent/__pycache__
 coursework.tex
 slides/week5.tex
 slides/week4.tex
+
+# Coursework folder: ignore everything except the assignment brief
+courseworks/*
+!courseworks/coursework.pdf
+!courseworks/coursework.tex

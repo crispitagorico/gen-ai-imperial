@@ -1,0 +1,231 @@
+\documentclass[11pt]{article}
+\usepackage[margin=2cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,hyperref}
+\usepackage{xcolor}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathcal{N}}
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\Id}{I_d}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.4em}
+
+\begin{document}
+
+\begin{center}
+{\Large \textbf{Generative Models in Finance --- Coursework}} \\[0.3em]
+{\normalsize Spring 2026 \quad $\cdot$ \quad Cristopher Salvi \quad $\cdot$ \quad Imperial College London} \\[0.3em]
+{\normalsize \textbf{Deadline:} 1 April 2026 \quad $\cdot$ \quad \textbf{Groups of 2} \quad $\cdot$ \quad \textbf{Weight:} 100\%}
+\end{center}
+
+\vspace{-0.3em}
+\hrule
+\vspace{0.6em}
+
+\textbf{Deliverables.} Submit a single \texttt{.zip} file to \href{mailto:c.salvi@imperial.ac.uk}{c.salvi@imperial.ac.uk} by the deadline containing:
+\begin{itemize}
+\item One report (PDF) covering Parts~I and~III.
+\item A Jupyter notebook (\texttt{.ipynb}) and any auxiliary files for Part~II.
+\end{itemize}
+
+\section*{Part I: Mathematics --- From Denoising to Flow Matching}
+
+\textit{The following papers are \textbf{required reading} for this part. The problems below guide you through their key results.}
+
+\begin{itemize}
+\item[\textbf{[H]}] A.\ Hyv\"arinen. \textit{Estimation of Non-Normalized Statistical Models by Score Matching.} JMLR, 2005.
+\item[\textbf{[V]}] P.\ Vincent. \textit{A Connection Between Score Matching and Denoising Autoencoders.} Neural Computation, 2011.
+\item[\textbf{[SE]}] Y.\ Song and S.\ Ermon. \textit{Generative Modeling by Estimating Gradients of the Data Distribution.} NeurIPS, 2019.
+\item[\textbf{[Ho]}] J.\ Ho, A.\ Jain, and P.\ Abbeel. \textit{Denoising Diffusion Probabilistic Models.} NeurIPS, 2020.
+\item[\textbf{[S+]}] Y.\ Song et al. \textit{Score-Based Generative Modeling through SDEs.} ICLR, 2021.
+\item[\textbf{[L+]}] Y.\ Lipman et al. \textit{Flow Matching for Generative Modeling.} ICLR, 2023.
+\item[\textbf{[A+]}] M.S.\ Albergo, N.M.\ Boffi, and E.\ Vanden-Eijnden. \textit{Stochastic Interpolants: A Unifying Framework for Flows and Diffusions.} arXiv:2303.08797, 2023.
+\end{itemize}
+
+\medskip
+
+\textit{Throughout, let $z \sim p_{\mathrm{data}}$ on $\R^d$, $\epsilon \sim \N(0, \Id)$ independent of $z$, and $x = \alpha_t z + \beta_t \epsilon$ for noise schedulers $\alpha_t, \beta_t$ with $\alpha_0 = \beta_1 = 0$, $\alpha_1 = \beta_0 = 1$. The conditional distribution is $p_t(x \mid z) = \N(\alpha_t z, \beta_t^2 \Id)$.}
+
+\medskip
+
+\textbf{Problem 1: Implicit score matching} (Hyv\"arinen, 2005)\textbf{.} \textit{The score $\nabla \log p(x)$ of a distribution $p$ is unknown, yet we can still set up a tractable objective to learn it. Here $p$ denotes a generic density on $\R^d$ (not necessarily $p_t$).}
+
+\begin{enumerate}\renewcommand{\labelenumi}{(\alph{enumi})}
+\item Let $s_\theta : \R^d \to \R^d$ be a parametric model. Write down the \textbf{explicit score matching} objective:
+\[
+J_{\mathrm{ESM}}(\theta) = \frac{1}{2}\E_{x \sim p}\!\bigl[\| s_\theta(x) - \nabla \log p(x) \|^2\bigr].
+\]
+Expand the square and identify the term that depends on $\theta$ but involves the unknown $\nabla \log p$.
+
+\item Using integration by parts, show that for each component $i$:
+\[
+\E_{x \sim p}\!\bigl[s_{\theta,i}(x)\, \partial_{x_i} \log p(x)\bigr] = -\E_{x \sim p}\!\bigl[\partial_{x_i} s_{\theta,i}(x)\bigr],
+\]
+provided $p(x)\, s_{\theta,i}(x) \to 0$ as $\|x\| \to \infty$.
+
+\item Conclude that, up to a constant independent of $\theta$:
+\[
+\boxed{J_{\mathrm{ESM}}(\theta) = \E_{x \sim p}\!\left[\sum_{i=1}^d \partial_{x_i} s_{\theta,i}(x) + \frac{1}{2}\|s_\theta(x)\|^2\right] + C.}
+\]
+This is the \textbf{implicit score matching} (ISM) objective: it only requires samples from $p$, not $\nabla \log p$ itself.
+\end{enumerate}
+
+\medskip
+
+\textbf{Problem 2: Tweedie's formula.} \textit{The posterior mean $\E[z \mid x]$ can be expressed in terms of the marginal score $\nabla \log p_t(x)$.}
+
+\begin{enumerate}\renewcommand{\labelenumi}{(\alph{enumi})}
+\item Show that $\nabla_x p_t(x \mid z) = -\dfrac{x - \alpha_t z}{\beta_t^2}\, p_t(x \mid z)$.
+
+\item Using $p_t(x) = \int p_t(x \mid z)\, p_{\mathrm{data}}(z)\, \dd z$, show that
+\[
+\nabla \log p_t(x) = -\frac{x - \alpha_t \E[z \mid x]}{\beta_t^2}.
+\]
+
+\item Deduce \textbf{Tweedie's formula}:
+\[
+\boxed{\E[z \mid x] = \frac{1}{\alpha_t}\bigl(x + \beta_t^2 \nabla \log p_t(x)\bigr).}
+\]
+\end{enumerate}
+
+\textbf{Problem 3: Denoising score matching.} \textit{We prove that regressing a network $s_t^\theta(x)$ against the conditional score $\nabla \log p_t(x \mid z)$ is equivalent to matching the (intractable) marginal score $\nabla \log p_t(x)$.}
+
+\begin{enumerate}\renewcommand{\labelenumi}{(\alph{enumi})}
+\item Write down the \textbf{marginal} and \textbf{conditional} score matching losses:
+\[
+\mathcal{L}_{\mathrm{SM}}(\theta) = \E_{t,\, x \sim p_t}\!\bigl[\| s_t^\theta(x) - \nabla \log p_t(x) \|^2\bigr], \qquad \mathcal{L}_{\mathrm{CSM}}(\theta) = \E_{t,\, z,\, x \sim p_t(\cdot \mid z)}\!\bigl[\| s_t^\theta(x) - \nabla \log p_t(x \mid z) \|^2\bigr].
+\]
+Expand $\mathcal{L}_{\mathrm{SM}}$ as $\E[\|s_t^\theta\|^2] - 2\E[(s_t^\theta)^T \nabla \log p_t] + C_1$, where $C_1$ is independent of $\theta$.
+
+\item Show that the cross term satisfies
+\[
+\E_{t,\, x \sim p_t}\!\bigl[(s_t^\theta(x))^T \nabla \log p_t(x)\bigr] = \E_{t,\, z,\, x \sim p_t(\cdot \mid z)}\!\bigl[(s_t^\theta(x))^T \nabla \log p_t(x \mid z)\bigr].
+\]
+
+\item Conclude that $\mathcal{L}_{\mathrm{SM}}(\theta) = \mathcal{L}_{\mathrm{CSM}}(\theta) + C$ for a constant $C$ independent of $\theta$.
+\end{enumerate}
+
+\textbf{Problem 4: From score matching to DDPM.} \textit{We show that the denoising diffusion (DDPM) $\epsilon$-prediction loss is a reparametrisation of conditional score matching.}
+
+\begin{enumerate}\renewcommand{\labelenumi}{(\alph{enumi})}
+\item Using Problem~2(a), show that $\nabla \log p_t(x \mid z) = -\epsilon / \beta_t$ when $x = \alpha_t z + \beta_t \epsilon$.
+
+\item Define the \textbf{noise predictor} $\epsilon_t^\theta(x) := -\beta_t\, s_t^\theta(x)$. Substitute into $\mathcal{L}_{\mathrm{CSM}}$ to show
+\[
+\mathcal{L}_{\mathrm{CSM}}(\theta) = \frac{1}{\beta_t^2}\,\E_{t,\, z,\, \epsilon}\!\bigl[\| \epsilon_t^\theta(\alpha_t z + \beta_t \epsilon) - \epsilon \|^2\bigr].
+\]
+
+\item Explain why minimising $\mathcal{L}_{\mathrm{CSM}}$ is equivalent to minimising the \textbf{DDPM loss} $\mathcal{L}_{\mathrm{DDPM}}(\theta) = \E_{t,z,\epsilon}[\| \epsilon_t^\theta(\alpha_t z + \beta_t \epsilon) - \epsilon \|^2]$. What is the role of the $1/\beta_t^2$ weighting?
+\end{enumerate}
+
+\textbf{Problem 5: Equivalence with flow matching.} \textit{We show that, for Gaussian paths, a trained score network can be converted into a flow matching vector field, and vice versa.}
+
+\begin{enumerate}\renewcommand{\labelenumi}{(\alph{enumi})}
+\item Recall the conditional vector field $u_t^{\mathrm{target}}(x \mid z) = (\dot\alpha_t - \frac{\dot\beta_t}{\beta_t}\alpha_t) z + \frac{\dot\beta_t}{\beta_t} x$ from the lectures. Show that it can be rewritten as
+\[
+u_t^{\mathrm{target}}(x \mid z) = \frac{\dot\alpha_t}{\alpha_t} x + \left(\frac{\dot\alpha_t \beta_t^2}{\alpha_t} - \dot\beta_t \beta_t\right) \nabla \log p_t(x \mid z).
+\]
+
+\item Using the identity from Problem~3(b) (replacing scores by vector fields via the same marginalisation structure), argue that the same conversion holds at the marginal level:
+\[
+\boxed{u_t^{\mathrm{target}}(x) = \frac{\dot\alpha_t}{\alpha_t} x + \left(\frac{\dot\alpha_t \beta_t^2}{\alpha_t} - \dot\beta_t \beta_t\right) \nabla \log p_t(x).}
+\]
+
+\item Specialise to the CondOT path ($\alpha_t = t$, $\beta_t = 1 - t$). Write out $u_t^{\mathrm{target}}(x)$ explicitly in terms of $x$ and $\nabla \log p_t(x)$, and verify that $u_t^{\mathrm{target}}(x \mid z) = z - \epsilon$ when $x = tz + (1-t)\epsilon$.
+\end{enumerate}
+
+\textbf{Problem 6: The probability flow ODE.} \textit{We derive a deterministic ODE whose trajectories have the same marginal distributions as a given SDE --- this is the probability flow ODE (Song et al., 2021).}
+
+\begin{enumerate}\renewcommand{\labelenumi}{(\alph{enumi})}
+\item Recall the \textbf{Fokker--Planck equation} from the lectures: the SDE $\dd X_t = u_t(X_t)\,\dd t + \sigma_t\,\dd W_t$ with $X_0 \sim p_0$ satisfies $X_t \sim p_t$ if and only if
+\[
+\partial_t p_t = -\mathrm{div}(p_t\, u_t) + \tfrac{\sigma_t^2}{2}\,\Delta p_t.
+\]
+Using $\Delta p_t = \mathrm{div}(\nabla p_t) = \mathrm{div}(p_t \nabla \log p_t)$, rewrite the Fokker--Planck equation as a \emph{continuity equation}:
+\[
+\partial_t p_t = -\mathrm{div}\!\bigl(p_t\,\tilde{u}_t\bigr), \qquad \tilde{u}_t(x) = \; ?
+\]
+Identify $\tilde{u}_t$ explicitly in terms of $u_t$, $\sigma_t$, and $\nabla \log p_t$.
+
+\item The continuity equation $\partial_t p_t = -\mathrm{div}(p_t\,\tilde{u}_t)$ corresponds to the ODE $\dd X_t = \tilde{u}_t(X_t)\,\dd t$. Deduce the \textbf{probability flow ODE}:
+\[
+\boxed{\dd X_t = \left[u_t(X_t) - \frac{\sigma_t^2}{2}\,\nabla \log p_t(X_t)\right]\dd t.}
+\]
+Explain in one sentence why this ODE and the original SDE produce the same marginal distributions $p_t$ despite having different individual trajectories.
+
+\item Using the conversion formula from Problem~5(b), show that for Gaussian paths the probability flow ODE can be written purely in terms of the vector field $u_t^{\mathrm{target}}$:
+\[
+\dd X_t = u_t^{\mathrm{target}}(X_t)\,\dd t.
+\]
+
+\end{enumerate}
+
+\newpage
+
+\section*{Part II: Coding --- Flow Matching on 2D Distributions}
+
+\textit{Implement conditional flow matching from scratch in PyTorch. Train a neural network vector field $u_t^\theta$ on a synthetic 2D dataset and use it to generate new samples. Submit a Jupyter notebook (.ipynb) with code, outputs, and brief commentary. All experiments should run on CPU in under 10 minutes.}
+
+\medskip
+
+\textbf{Task 1: Data and probability paths.}
+\begin{enumerate}\renewcommand{\labelenumi}{(\alph{enumi})}
+\item Choose a non-trivial 2D target distribution $p_{\mathrm{data}}$ (e.g.\ two moons, concentric circles, a mixture of 8 Gaussians arranged in a ring, or a Swiss roll). Write a function \texttt{sample\_data(n)} that returns \texttt{n} samples.
+\item Implement the CondOT probability path: given a data sample $z$ and noise $\epsilon \sim \N(0, I_2)$, compute $x_t = tz + (1-t)\epsilon$ and the target vector field $u_t^{\mathrm{target}}(x_t \mid z) = z - \epsilon$. Visualise samples from $p_t(\cdot \mid z)$ for a fixed $z$ at times $t \in \{0, 0.25, 0.5, 0.75, 1\}$.
+\end{enumerate}
+
+\textbf{Task 2: Training.}
+\begin{enumerate}\renewcommand{\labelenumi}{(\alph{enumi})}
+\item Define a neural network $u_t^\theta(x)$ that takes as input $(x, t) \in \R^2 \times [0,1]$ and outputs a vector in $\R^2$. Use an MLP with at least 3 hidden layers (suggested width: 128). Time $t$ should be concatenated to $x$ as an input feature.
+\item Implement Algorithm~3 from the lectures (flow matching training with CondOT path). Train for a sufficient number of iterations (suggested: 10\,000--20\,000 steps, batch size 256, learning rate $10^{-3}$ with Adam). Plot the training loss curve.
+\end{enumerate}
+
+\textbf{Task 3: Sampling and evaluation.}
+\begin{enumerate}\renewcommand{\labelenumi}{(\alph{enumi})}
+\item Implement Algorithm~1 from the lectures (Euler method sampling). Generate 2\,000 samples from the trained model using $n = 100$ Euler steps. Plot the generated samples alongside true samples from $p_{\mathrm{data}}$.
+\item Implement Heun's method (second-order) for sampling. Compare the quality of generated samples using Euler vs.\ Heun at $n \in \{5, 10, 25, 50, 100\}$ steps. Summarise your findings in a table or figure.
+\item Visualise the learned vector field: plot $u_t^\theta(x)$ as a quiver plot on a grid at times $t \in \{0, 0.25, 0.5, 0.75, 1\}$. Overlay a few ODE trajectories from $t=0$ to $t=1$.
+\end{enumerate}
+
+\textbf{Task 4: Extending to diffusion (bonus).}
+\begin{enumerate}\renewcommand{\labelenumi}{(\alph{enumi})}
+\item Using your trained vector field $u_t^\theta$ and the conversion formula from Problem~5, derive a score network $s_t^\theta$ for the CondOT path. Implement Euler--Maruyama sampling (Algorithm~2 from the lectures) with $\sigma_t = 0.1$. Compare the generated samples with the ODE samples from Task~3.
+\end{enumerate}
+
+\newpage
+
+\section*{Part III: Literature Review --- Discrete Diffusion and Flow Matching for Text}
+
+The continuous-state diffusion and flow matching framework studied in Parts~I--II operates on $\R^d$. A major open question is how to extend these ideas to \textbf{discrete state spaces} (e.g.\ token sequences), where the data lives on a finite set rather than in Euclidean space. This is the domain of autoregressive LLMs (Weeks~1--3 of this course). Recently, discrete diffusion and flow matching models have emerged as a potential alternative to autoregressive generation for text --- notably through the startup \href{https://www.inceptionlabs.ai/}{Inception Labs} (co-founded by S.\ Ermon), whose diffusion-based language model \textit{Mercury} demonstrates competitive quality with significantly faster inference than autoregressive models.
+
+\medskip
+
+\textit{Write a critical review of at most \textbf{5 pages} (excluding references) on the topic of discrete diffusion and flow matching for text generation. Your review should:}
+\begin{itemize}
+\item \textit{Summarise the main contributions of this line of work and situate it within the landscape of generative models for discrete data.}
+\item \textit{Identify the key mathematical idea(s): what replaces the score function, the SDE, and/or the probability path when the state space is discrete?}
+\item \textit{Critically compare with autoregressive LLMs: what are the architectural, training, and inference trade-offs? Under what conditions might discrete diffusion/flow matching models outperform or complement autoregressive generation?}
+\end{itemize}
+
+\medskip
+
+\textit{The following references provide a good starting point for this review:}
+
+\begin{enumerate}
+\item J.\ Austin, D.D.\ Johnson, J.\ Ho, D.\ Tarlow, and R.\ van den Berg. \textit{Structured Denoising Diffusion Models in Discrete State-Spaces} (D3PM). NeurIPS, 2021.
+\item A.\ Lou, C.\ Meng, and S.\ Ermon. \textit{Discrete Diffusion Modeling by Estimating the Ratios of the Data Distribution} (SEDD). ICML, 2024.
+\item A.\ Campbell, J.\ Benton, V.\ De Bortoli, T.\ Rainforth, G.\ Deligiannidis, and A.\ Doucet. \textit{A Continuous Time Framework for Discrete Denoising Models.} NeurIPS, 2022.
+\item J.\ Shi, K.\ Han, Z.\ Wang, A.\ Doucet, and M.\ Titsias. \textit{Simplified and Generalized Masked Diffusion for Discrete Data.} NeurIPS, 2024.
+\item I.\ Gat, T.\ Remez, N.\ Shaul, F.\ Kreuk, R.T.Q.\ Chen, G.\ Synnaeve, Y.\ Adi, and Y.\ Lipman. \textit{Discrete Flow Matching.} NeurIPS, 2024.
+\item S.S.\ Sahoo, M.\ Arriola, Y.\ Schiff, A.\ Gokaslan, E.\ Marroquin, J.T.\ Chiu, A.\ Rush, and V.\ Kuleshov. \textit{Simple and Effective Masked Diffusion Language Models.} NeurIPS, 2024.
+\end{enumerate}
+
+\end{document}
