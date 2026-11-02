@@ -8,31 +8,33 @@ Suppose we are given a large number of samples from an unknown probability distr
 $\mathbb R^n$, with $n$ large, and we would like to generate new samples from $q$. Diffusion models,
 which are now widely used to generate images and audio, approach this problem as follows.
 
-One first destroys the data by running the Ornstein–Uhlenbeck process
+We add Gaussian noise to the data by running the Ornstein–Uhlenbeck process
 
 $$dX_\tau=-X_\tau\,d\tau+\sqrt2\,dB_\tau,\qquad X_0\sim q .$$
 
-The law $q_\tau$ of $X_\tau$ converges to the standard Gaussian, exponentially fast as soon as $q$
-has a finite second moment. One then tries to run this process backwards. It is a classical, and not entirely obvious, fact that
-the time reversal of a diffusion is again a diffusion. Here it solves
+The law $q_\tau$ of $X_\tau$ approaches the standard Gaussian, exponentially fast when $q$ has a
+finite second moment. To generate data from noise, we would like to reverse this evolution. Changing
+the sign of the drift alone does not give the reversal. The reversed process is again a diffusion,
+with an additional term involving the score of the density at the current noise level,
 
 $$dY_t=\bigl[Y_t+2\nabla\log q_{T-t}(Y_t)\bigr]dt+\sqrt2\,dB_t ,$$
 
 so if $Y_0$ is drawn from $q_T$, which for large $T$ is very nearly Gaussian, then $Y_T$ has law $q$.
-The only unknown in this equation is the score $\nabla\log q_\tau$ of the noised distributions. If we
-write $X_\tau=e^{-\tau}X_0+\sigma_\tau Z$, with $\sigma_\tau^2=1-e^{-2\tau}$ and $Z$ standard
-Gaussian, then Tweedie's formula gives
+The only unknown in this equation is the score $\nabla\log q_\tau$ of the noised distributions. For each
+fixed $\tau$, the pair $(X_0,X_\tau)$ has the same law as $(X_0,e^{-\tau}X_0+\sigma_\tau Z)$, with
+$\sigma_\tau^2=1-e^{-2\tau}$ and $Z$ standard Gaussian independent of $X_0$, and Tweedie's formula gives
 
 $$\nabla\log q_\tau(x)=-\sigma_\tau^{-1}\,\mathbb E[Z\mid X_\tau=x],$$
 
 so the score is, up to a factor, the best prediction of the noise given the noisy point. Estimating
 it is a regression problem, and in practice one solves it by training a neural network to denoise.
 
-Generating samples has thus been reduced to regression, and this course is about making that
-reduction quantitative. How large must $T$ be, how finely must we discretise the reverse equation,
-and how accurately must we learn the score? How do the answers depend on the dimension? And why does
-the method work for distributions with several well-separated modes, where Langevin dynamics can be
-exponentially slow?
+Regression gives an estimate of the drift, but a sampler still has to start from a Gaussian
+approximation to $q_T$ and solve the reverse equation on a finite time grid. We will bound the
+resulting error in terms of the horizon, the grid and the accuracy of the learned score, keeping
+track of the dimension. Well-separated mixtures, on which Langevin dynamics can be exponentially
+slow, will provide examples where the comparison between the two samplers is particularly
+informative.
 
 It helps to keep one example in mind throughout. If $q=N(m,\Sigma)$ is Gaussian then so is
 $q_\tau=N\bigl(e^{-\tau}m,\,e^{-2\tau}\Sigma+\sigma_\tau^2I_n\bigr)$, the score is affine in $x$, and
@@ -43,9 +45,10 @@ order $1/\tau$ as $\tau\to0$, and a good part of the convergence theory is about
 
 ## Outline
 
-The course consists of five three-hour lectures, given on the board. The outline below is
-provisional, and the pace will adapt to the class. Material marked ⋆ is optional and will not be
-examined.
+The course consists of five lectures, given on the board. The outline, including the choice of
+starred material, is provisional and may change with the pace of the class. Material marked ⋆ is for
+self-study and will not be covered in the lectures. Everything in the notes, including the starred
+material, is examinable.
 
 ### Week 1. Sampling in high dimension (Chapters 1–2)
 
@@ -55,14 +58,14 @@ score from samples by score matching, denoising and Tweedie's formula.
 
 ### Week 2. Convergence of Langevin dynamics (Chapter 3)
 
-How fast Langevin dynamics and its discretisation approach the target, under strong convexity and
-under Poincaré and log-Sobolev inequalities, and why they become very slow when the target has
-several well-separated modes.
+Convergence of Langevin dynamics under strong convexity and under Poincaré and log-Sobolev
+inequalities. The discretisation bias of the unadjusted Langevin algorithm, and why both become
+very slow when the target has several well-separated modes.
 
 ### Week 3. Time reversal (Chapter 4, and Chapter 5⋆)
 
 Simulated annealing, the Ornstein–Uhlenbeck process and the time reversal of diffusions, which
-together lead to score-based diffusion models. The proof of the time-reversal formula is optional.
+together lead to score-based diffusion models. The proof of the time-reversal formula is for self-study.
 
 ### Week 4. Convergence of diffusion models (Chapter 6)
 
@@ -72,7 +75,7 @@ assumptions on the score, and the statistical cost of learning the score.
 ### Week 5. Flows and guidance (Chapters 7–8, and Chapter 9⋆)
 
 The probability flow ODE and flow matching. Conditional generation, and guidance seen through Doob's
-$h$-transform. Discrete diffusion models are optional.
+$h$-transform. Discrete diffusion models are for self-study.
 
 An appendix of the notes collects the background we need from stochastic calculus and on divergences
 between probability measures.
@@ -81,8 +84,7 @@ between probability measures.
 
 The lecture notes will be made available at the end of the course, so please come to the lectures and
 take notes. There is an exercise sheet for each week, with exercises numbered according to the
-chapters of the notes, and exercises marked ⋆ are on optional material. A separate background sheet
-revises the stochastic calculus used in the course.
+chapters of the notes, and exercises marked ⋆ are on self-study material.
 
 | Week | Chapters | Exercises | Notebook |
 |------|----------|-----------|----------|
@@ -91,7 +93,6 @@ revises the stochastic calculus used in the course.
 | 3 | 4, 5⋆ | [Sheet 3](notes/exercises_week3.pdf) | [Time reversal](code/week3_time_reversal.ipynb) |
 | 4 | 6 | [Sheet 4](notes/exercises_week4.pdf) | [Convergence of diffusion models](code/week4_convergence_of_diffusion_models.ipynb) |
 | 5 | 7–8, 9⋆ | [Sheet 5](notes/exercises_week5.pdf) | [Flows and guidance](code/week5_flows_and_guidance.ipynb) |
-| | Appendix | [Background sheet](notes/exercises_background.pdf) | |
 
 The notebooks are not exercises. They illustrate the results of the lectures numerically, and they
 are stored with their outputs, so they can be read on GitHub without running them. Weeks 4 and 5
@@ -100,8 +101,8 @@ train small diffusion models on MNIST. More details are in the [notebooks' READM
 ## Prerequisites
 
 The course assumes linear algebra, probability, and stochastic calculus at the level of Brownian
-motion, Itô's formula and stochastic differential equations. The background exercise sheet revises
-what we use. Some familiarity with convex optimisation or statistical learning theory will help.
+motion, Itô's formula and stochastic differential equations. An appendix of the notes revises what
+we use. Some familiarity with convex optimisation or statistical learning theory will help.
 
 ## Assessment
 

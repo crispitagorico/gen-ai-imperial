@@ -3,30 +3,29 @@
 There is one notebook for each week. They are not exercises and are not examined. They are meant to
 be read alongside the notes.
 
-Most results in the course bound an error by a constant times some function of the dimension, the
-step size or the time horizon. A simulation proves nothing, but it can show what such a statement
-leaves out. It shows how large the constants are, how far the bounds are from the exact errors, and what goes
-wrong when a hypothesis fails. For this reason the
-notebooks mostly use examples in which the exact answer is known, such as Gaussian data or mixtures
-of Gaussians, and compare the simulation with the formula from the notes. Where the dimension
-matters, the experiments let it vary, up to 784 for MNIST. Pictures in the plane are used only where
-a vector field or a family of trajectories has to be drawn.
+Many of the experiments use Gaussian targets, for which we can calculate the sampling error and
+compare it with the bounds in the notes. Mixtures let us examine the failure of Langevin dynamics to
+move between well-separated modes. In both cases we vary the dimension and the time grid, rather than
+judge the sampler from a picture alone. The MNIST experiments are in dimension 784. Planar examples
+are used where we want to draw a velocity field or follow individual trajectories.
 
 Each notebook runs from top to bottom, and most sections end with suggestions of parameters to vary.
-The notebooks are stored with their outputs, so they can be read on GitHub directly.
+The notebooks are stored with their outputs, so they can be read on GitHub directly. The numbers
+quoted below come from these stored runs, and the runtimes are approximate.
 
 ## Week 1. [Sampling and the score](week1_sampling_and_the_score.ipynb)
 
-The notebook starts with the curse of dimensionality. Rejection sampling from the unit ball with
-proposals from the cube needs about $10^{20}$ proposals per sample in dimension 40. Kernel density
-estimation with 20,000 samples has a median error of 1% in dimension 1, and of 99% in dimension 32.
-It then turns to Langevin dynamics. The unadjusted Langevin algorithm has exactly the stationary
-variance predicted in the notes, which is not that of the target. Started in one mode of a mixture,
-Langevin dynamics stays there. Near a well-separated component, the score of a mixture hardly
-depends on the weights, so a trajectory that cannot cross between the modes has no way of learning
-them. The
-last section checks denoising score matching against the identity of Chapter 2. The excess loss of a
-learned score is 0.0293, and its actual mean-square error is 0.0287.
+Rejection sampling from the unit ball, using proposals from the cube, needs about $10^{20}$ proposals
+per accepted sample in dimension 40. Density estimation deteriorates too. With 20,000 Gaussian
+training samples, the median relative error of a kernel density estimate at independent test points
+rises from about 1% in dimension 1 to 99% in dimension 32.
+
+For a Gaussian target, ULA has the stationary variance calculated in the notes, including its
+discretisation bias. On the separated mixture used here, a trajectory started in one mode remains
+there during the run. Near that mode the score depends very little on the mixture weights, so
+accurate local motion does not ensure that the sampler gets the proportions right. The denoising
+experiment compares the excess regression loss of a learned score, 0.0293, with its mean-square
+error, 0.0287, as predicted by the identity of Chapter 2.
 
 ## Week 2. [Langevin dynamics](week2_langevin_dynamics.ipynb)
 
@@ -36,16 +35,16 @@ about 104 to guarantee a small total variation distance, while the bound through
 needs about 6.6, close to the exact value 6.4. The $\chi^2$ bound
 pays for starting far from equilibrium, since the initial divergence $e^{|m|^2}-1$ is exponentially
 large. For a mixture of two modes at distance $2a$, the mean time to cross from one mode to the other
-grows exponentially in $a^2$, and so does a lower bound on the Poincaré constant. The notebook ends by measuring the bias of ULA
-as a function of the step size.
+grows exponentially in $a^2$, and so does a lower bound on the Poincaré constant. Varying the step size also lets us measure
+the stationary bias of ULA.
 
 ## Week 3. [Time reversal](week3_time_reversal.ipynb)
 
 The target is a mixture of two well-separated modes, with weights 0.8 and 0.2. Langevin dynamics puts
 weight 0.48 on the lighter mode, and simulated annealing puts 0.49. The reverse Ornstein–Uhlenbeck
-process with the exact score gets 0.20. The rest of the notebook follows the forward process as it
-blurs the data, checks that the reverse process has the exact variance at every time, and shows the
-score acting as a denoiser at several noise levels. A diffusion model whose score is learned from
+process with the exact score gets 0.20. The forward marginals show how noising changes the target.
+We compare the simulated reverse variance with its exact value, and use Tweedie's formula to examine
+the denoised estimates at several noise levels. A diffusion model whose score is learned from
 samples puts weight 0.19 on the lighter mode.
 
 ## Week 4. [Convergence of diffusion models](week4_convergence_of_diffusion_models.ipynb)
@@ -70,8 +69,8 @@ flow on this coupling (reflow) straightens the trajectories, and one or two Eule
 give good samples.
 In a linear-Gaussian model, guidance with scale $\gamma=2$ gives output mean 0.749 and variance 0.295,
 while the formula of Chapter 8 predicts 0.750 and 0.292. The sharpened target one might have expected
-has mean 0.667, so guidance overshoots it. The notebook ends with classifier-free guidance on MNIST
-for $\gamma=0,1,3,7$.
+has mean 0.667, so guidance overshoots it. The MNIST experiment compares classifier-free guidance
+at scales $\gamma=0,1,3,7$.
 
 The small U-Net used in Weeks 4 and 5 is in [`mnist_unet.py`](mnist_unet.py). It predicts the noise,
 so the score is minus its output divided by $\sigma_\tau$.
