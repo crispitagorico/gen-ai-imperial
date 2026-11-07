@@ -47,7 +47,7 @@ Some familiarity with convex optimisation or statistical learning theory will he
 
 ## Assessment
 
-The course is assessed by an oral exam. Details will be announced during the term.
+The course is assessed 100% by a written exam.
 
 ## Resources
 
