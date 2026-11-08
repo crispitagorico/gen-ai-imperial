@@ -1,7 +1,6 @@
 # Notebooks
 
-The notebooks accompany the lectures. They are not exercises and are not examined. Each one runs
-from top to bottom and includes stored outputs.
+The notebooks accompany the lectures.
 
 ## Running the notebooks
 
