@@ -1,4 +1,4 @@
-"""A small time-conditioned U-Net for 28x28 images, used in the Week 4 and Week 5 notebooks.
+"""A small time-conditioned U-Net for 28x28 images, used in the diffusion-model and flow notebooks.
 
 The network takes a noisy image x at forward OU time tau (and optionally a class label) and predicts the
 noise Z in x = exp(-tau) x0 + sigma_tau Z. The score is then -prediction / sigma_tau (Tweedie's formula).
