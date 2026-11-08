@@ -18,13 +18,6 @@ exercises/*
 .venv/
 __pycache__/
 
-# Notebooks are released as the course progresses: remove a line to publish it.
-code/langevin_dynamics.ipynb
-code/time_reversal.ipynb
-code/convergence_of_diffusion_models.ipynb
-code/flows_and_guidance.ipynb
-code/mnist_unet.py
-
 # Notebooks: no downloaded data or trained networks
 code/**/data/
 code/**/checkpoints/
