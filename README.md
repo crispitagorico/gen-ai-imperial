@@ -4,33 +4,25 @@ MSc in Mathematical Finance, Imperial College London, 2026–27. Lectures by Cri
 
 ## About the course
 
-Diffusion models are the technology behind today's image, video and audio generation, and they are
-built on mathematics that this programme already teaches, namely Brownian motion, stochastic
-differential equations, Itô calculus and time reversal. The course uses these tools to understand how a model can
-learn a probability distribution in thousands of dimensions from samples alone, and then generate
-new ones. We start from Langevin dynamics and the score, prove when and how fast it converges, and
-then develop diffusion models, flow matching and guidance as a mathematical theory, with convergence
-guarantees that track the dimension, the step size and the error of a learned score. Gaussian
-examples, where every quantity can be computed by hand, show what the guarantees mean and where
-they are sharp. By the end you will be able to read the current research literature on generative
-models and to build and analyse such a model yourself, whether the data are images or price paths.
+Diffusion models are the technology behind today's image, video and audio generation. The course uses  tools from stochastic analysis to provide a mathematical description of how modern generative approaches are used to model a probability distribution.
+We will begin by analysing Langevin dynamics and score matching, and then develop diffusion models, flow matching and guidance as a mathematical theory.
 
 ## Course material
 
 The lecture notes will be made available at the end of the course, so please come to the lectures and
 take notes. There is an exercise sheet for each chapter of the notes, with exercises numbered as in
-the notes, released as the course progresses.
+the notes. Sheets and notebooks are released as the course progresses.
 
-| Week | Chapter | Exercises | Notebook |
-| ---- | ------- | --------- | -------- |
-| 1 | 1. Sampling in high dimension | [Sheet 1](exercises/exercises_chapter1.pdf) | [Sampling and the score](code/sampling_and_the_score.ipynb) |
-| 1 | 2. Langevin dynamics and the score | [Sheet 2](exercises/exercises_chapter2.pdf) | [Sampling and the score](code/sampling_and_the_score.ipynb) |
-| 2 | 3. Convergence of the Langevin diffusion and of ULA | to come | [Langevin dynamics](code/langevin_dynamics.ipynb) |
-| 3 | 4. Noising and time reversal | to come | [Time reversal](code/time_reversal.ipynb) |
-| 4 | 5. Convergence of diffusion models | to come | [Convergence of diffusion models](code/convergence_of_diffusion_models.ipynb) |
-| 5 | 6. ODE and flow-based generative models | to come | [Flows and guidance](code/flows_and_guidance.ipynb) |
-| 5 | 7. Guidance and the Doob h-transform | to come | [Flows and guidance](code/flows_and_guidance.ipynb) |
-| 5 | 8. Discrete diffusion models | to come | |
+| Week | Chapter                                             | Exercises                                  | Notebook                                                                     |
+| ---- | --------------------------------------------------- | ------------------------------------------ | ---------------------------------------------------------------------------- |
+| 1    | 1. Sampling in high dimension                       | [Sheet 1](exercises/exercises_chapter1.pdf) | [Sampling and the score](code/sampling_and_the_score.ipynb)                   |
+| 1    | 2. Langevin dynamics and the score                  | [Sheet 2](exercises/exercises_chapter2.pdf) | [Sampling and the score](code/sampling_and_the_score.ipynb)                   |
+| 2    | 3. Convergence of the Langevin diffusion and of ULA | to come                                    | to come                             |
+| 3    | 4. Noising and time reversal                        | to come                                    | to come                                     |
+| 4    | 5. Convergence of diffusion models                  | to come                                    | to come |
+| 5    | 6. ODE and flow-based generative models             | to come                                    | to come                           |
+| 5    | 7. Guidance and the Doob h-transform                | to come                                    | to come                           |
+| 5    | 8. Discrete diffusion models                        | to come                                    |                                                                              |
 
 ## Prerequisites
 
