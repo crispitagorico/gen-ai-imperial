@@ -2,11 +2,13 @@
 archive/
 
 # Lecture notes: sources and the notes PDF stay private until the end of the
-# course; only the weekly exercise sheets (without solutions) are
-# published. The combined sheet notes/exercises.pdf is built locally for cross-references only.
+# course; only the weekly exercise sheets (without solutions) and the background
+# appendix notes/background.pdf are published. The combined sheet
+# notes/exercises.pdf is built locally for cross-references only.
 # To release the notes, add: !notes/lecture_notes.pdf
 notes/*
 !notes/exercises_week[1-5].pdf
+!notes/background.pdf
 
 .DS_Store
 .vscode/
