@@ -11,17 +11,17 @@ We will begin by analysing Langevin dynamics and score matching, and then develo
 
 The lecture notes will be made available at the end of the course, so please come to the lectures and
 take notes. There is an exercise sheet for each chapter of the notes, with exercises numbered as in
-the notes. Sheets and notebooks are released as the course progresses.
+the notes, released as the course progresses.
 
 | Week | Chapter                                             | Exercises                                  | Notebook                                                                     |
 | ---- | --------------------------------------------------- | ------------------------------------------ | ---------------------------------------------------------------------------- |
 | 1    | 1. Sampling in high dimension                       | [Sheet 1](exercises/exercises_chapter1.pdf) | [Sampling and the score](code/sampling_and_the_score.ipynb)                   |
 | 1    | 2. Langevin dynamics and the score                  | [Sheet 2](exercises/exercises_chapter2.pdf) | [Sampling and the score](code/sampling_and_the_score.ipynb)                   |
-| 2    | 3. Convergence of the Langevin diffusion and of ULA | to come                                    | to come                             |
-| 3    | 4. Noising and time reversal                        | to come                                    | to come                                     |
-| 4    | 5. Convergence of diffusion models                  | to come                                    | to come |
-| 5    | 6. ODE and flow-based generative models             | to come                                    | to come                           |
-| 5    | 7. Guidance and the Doob h-transform                | to come                                    | to come                           |
+| 2    | 3. Convergence of the Langevin diffusion and of ULA | to come                                    | [Langevin dynamics](code/langevin_dynamics.ipynb) |
+| 3    | 4. Noising and time reversal                        | to come                                    | [Time reversal](code/time_reversal.ipynb) |
+| 4    | 5. Convergence of diffusion models                  | to come                                    | [Convergence of diffusion models](code/convergence_of_diffusion_models.ipynb) |
+| 5    | 6. ODE and flow-based generative models             | to come                                    | [Flows and guidance](code/flows_and_guidance.ipynb) |
+| 5    | 7. Guidance and the Doob h-transform                | to come                                    | [Flows and guidance](code/flows_and_guidance.ipynb) |
 | 5    | 8. Discrete diffusion models                        | to come                                    |                                                                              |
 
 ## Prerequisites
