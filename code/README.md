@@ -6,8 +6,7 @@ be read alongside the notes.
 Many of the experiments use Gaussian targets, for which we can calculate the sampling error and
 compare it with the bounds in the notes. Mixtures let us examine the failure of Langevin dynamics to
 move between well-separated modes. In both cases we vary the dimension and the time grid, rather than
-judge the sampler from a picture alone. The MNIST experiments are in dimension 784. Planar examples
-are used where we want to draw a velocity field or follow individual trajectories.
+judge the sampler from a picture alone.
 
 Each notebook runs from top to bottom, and most sections end with suggestions of parameters to vary.
 The notebooks include stored outputs. Runtimes are approximate.
