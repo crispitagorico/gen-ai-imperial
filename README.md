@@ -4,12 +4,16 @@ MSc in Mathematical Finance, Imperial College London, 2026–27. Lectures by Cri
 
 ## About the course
 
-The course is about sampling from a probability distribution on $\mathbb R^n$ in high dimension,
-given either its density up to a normalising constant or a collection of samples from it. We study
-the mathematics of score-based methods, from Langevin dynamics to diffusion models, flow matching
-and guidance. The aim is to understand why these methods work, to prove convergence guarantees that
-keep track of the dimension, the step size and the error of a learned score, and to see on Gaussian
-examples how sharp the guarantees are.
+Diffusion models are the technology behind today's image, video and audio generation, and they are
+built on mathematics that this programme already teaches: Brownian motion, stochastic differential
+equations, Itô calculus and time reversal. The course uses these tools to understand how a model can
+learn a probability distribution in thousands of dimensions from samples alone, and then generate
+new ones. We start from Langevin dynamics and the score, prove when and how fast it converges, and
+then develop diffusion models, flow matching and guidance as a mathematical theory, with convergence
+guarantees that track the dimension, the step size and the error of a learned score. Gaussian
+examples, where every quantity can be computed by hand, show what the guarantees mean and where
+they are sharp. By the end you will be able to read the current research literature on generative
+models and to build and analyse such a model yourself, whether the data are images or price paths.
 
 ## Course material
 
