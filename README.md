@@ -4,27 +4,12 @@ MSc in Mathematical Finance, Imperial College London, 2026–27. Lectures by Cri
 
 ## About the course
 
-Suppose we want to draw samples from a probability distribution $\mu$ on $\mathbb R^n$, where $n$ is
-large. Sometimes we know the density of $\mu$ up to a normalising constant; sometimes we only have a
-large collection of samples, such as a dataset of images, and want to produce new ones. In this
-course we will study the mathematics behind the methods used in both situations, and in particular
-behind diffusion models.
-
-We will begin with Langevin dynamics, which samples from $\mu$ by following its score $\nabla\log\mu$
-with added noise. We will prove that it converges quickly when $\mu$ is strongly log-concave, or satisfies
-a Poincaré or log-Sobolev inequality, and see why it can be exponentially slow when $\mu$ has
-well-separated modes.
-
-We will then turn to diffusion models. These add Gaussian noise to the data until it looks like a
-standard Gaussian, and then run the noising process backwards. We will show that the reversed
-process is again a diffusion, whose drift involves the score of the noisy data, and that this score
-can be learned by training a network to remove the noise. We will then bound the error of the
-resulting sampler in terms of the time horizon, the step size and the accuracy of the learned score,
-keeping track of the dimension.
-
-Finally, we will look at deterministic samplers and flow matching, at conditional generation, and at
-diffusion on discrete data. Throughout, Gaussian examples, where everything can be computed
-explicitly, will let us test how sharp the results are.
+The course is about sampling from a probability distribution on $\mathbb R^n$ in high dimension,
+given either its density up to a normalising constant or a collection of samples from it. We study
+the mathematics of score-based methods, from Langevin dynamics to diffusion models, flow matching
+and guidance. The aim is to understand why these methods work, to prove convergence guarantees that
+keep track of the dimension, the step size and the error of a learned score, and to see on Gaussian
+examples how sharp the guarantees are.
 
 ## Course material
 
