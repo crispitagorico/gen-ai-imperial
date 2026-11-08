@@ -5,7 +5,7 @@ archive/
 # course; only the chapter exercise sheets (without solutions) and the background
 # appendix lectures/background.pdf are published. The combined sheet
 # exercises/exercises.pdf is built locally for cross-references only.
-# To release the notes, add: !lectures/lecture_notes.pdf
+# To release the notes, add: !lectures/lecture_notes.pdf and !lectures/chapter[1-8].pdf
 lectures/*
 !lectures/background.pdf
 exercises/*
