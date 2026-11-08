@@ -5,8 +5,8 @@ MSc in Mathematical Finance, Imperial College London, 2026–27. Lectures by Cri
 ## About the course
 
 Diffusion models are the technology behind today's image, video and audio generation, and they are
-built on mathematics that this programme already teaches: Brownian motion, stochastic differential
-equations, Itô calculus and time reversal. The course uses these tools to understand how a model can
+built on mathematics that this programme already teaches, namely Brownian motion, stochastic
+differential equations, Itô calculus and time reversal. The course uses these tools to understand how a model can
 learn a probability distribution in thousands of dimensions from samples alone, and then generate
 new ones. We start from Langevin dynamics and the score, prove when and how fast it converges, and
 then develop diffusion models, flow matching and guidance as a mathematical theory, with convergence
