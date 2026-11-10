@@ -74,7 +74,7 @@ The course assumes working knowledge in linear algebra, probability, and basic s
 
 ## Assessment
 
-The course is assessed 100% by a written exam.
+The course is assessed 100% by an oral exam.
 
 ## Resources
 
