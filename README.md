@@ -66,7 +66,7 @@ The lecture notes will be made available at the end of the course, so please com
 | 4    | 5. Convergence of diffusion models                  | to come                                    | [Convergence of diffusion models](code/convergence_of_diffusion_models.ipynb) |
 | 5    | 6. ODE and flow-based generative models             | to come                                    | [Flows and guidance](code/flows_and_guidance.ipynb)                           |
 | 5    | 7. Guidance and the Doob h-transform                | to come                                    | [Flows and guidance](code/flows_and_guidance.ipynb)                           |
-| 5    | 8. Discrete diffusion models                        | to come                                    |                                                                              |
+| 5    | 8. Discrete diffusion models                        | to come                                    | ---                                                                          |
 
 ## Prerequisites
 
@@ -102,5 +102,5 @@ The course is assessed 100% by a written exam.
 ## Acknowledgements
 
 This course draws on *Computational and Statistical Aspects of Diffusion Models*
-(401-4634-24L) by [Yuansi Chen](https://people.math.ethz.ch/~chenyua/) at ETH Zürich. 
+(401-4634-24L) by [Yuansi Chen](https://people.math.ethz.ch/~chenyua/) at ETH Zürich.
 I thank him for making his course material publicly available.
