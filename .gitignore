@@ -9,7 +9,7 @@ archive/
 lectures/*
 exercises/*
 # Chapter sheets are released as the course progresses: widen the range to publish more.
-!exercises/exercises_chapter[1-2].pdf
+!exercises/exercises_chapter1.pdf
 
 .DS_Store
 .vscode/
