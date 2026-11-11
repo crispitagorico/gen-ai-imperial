@@ -9,49 +9,35 @@ We will begin by analysing Langevin dynamics and score matching, and then develo
 
 ### 1. Sampling in high dimension
 
-We want to sample from a probability distribution $\mu$ on $\mathbb{R}^n$, where $n$ is large. Either we know the density of $\mu$ up to a normalising constant, or we only have samples from $\mu$. In this chapter we review the classical methods for both settings, such as inverse-CDF sampling, rejection sampling and density estimation. We show that their cost grows at least exponentially with $n$, because they need samples or proposals to fall in a region whose probability decays exponentially with the dimension. This is the curse of dimensionality. These methods fail because they make no use of the structure of $\mu$. The score $\nabla\log\mu$ gives such information. It points in the direction in which the density increases fastest, it does not depend on the normalising constant, and it can be estimated from samples.
-
-So far we have no sampling method that uses the score. We build one in Chapter 2.
+We begin with the problem of the course, which is to draw samples from a probability distribution $\mu$ on $\mathbb{R}^n$ when $n$ is large, knowing either its density up to a normalising constant or only a collection of samples. We will see that the classical methods stop working in high dimension, because they explore the space without knowing where $\mu$ puts its mass. This will lead us to the score $\nabla\log\mu$, which at every point gives the direction in which the density increases fastest.
 
 ### 2. Langevin dynamics and the score
 
-If we simply follow the score, we get the gradient flow of $\log\mu$, which converges to a local maximum of the density and does not sample from $\mu$. In this chapter we add Brownian noise to the gradient flow. This gives the Langevin diffusion, and we show that $\mu$ is invariant for it. Discretising in time gives the unadjusted Langevin algorithm (ULA), which only needs evaluations of the score. If we only have samples from $\mu$, we do not know the score, and we show that we can estimate it from the samples by solving a regression problem.
-
-We only showed that the Langevin diffusion keeps the law $\mu$ if it is started from $\mu$ itself. So far we have no guarantee on what happens if it is started from a different distribution. Also, ULA introduces a bias, because its invariant law is not $\mu$. We treat both points in Chapter 3.
+We will then use the score to build a first sampling algorithm. Following the score alone would only take us to a maximum of the density, so we will add random noise to the motion, which gives the Langevin diffusion. We will also see how to learn the score when we only have samples from $\mu$.
 
 ### 3. Convergence of the Langevin diffusion and of ULA
 
-In this chapter we show that the Langevin diffusion started from any initial law converges to $\mu$ exponentially fast. We prove this in Wasserstein distance when the potential is strongly convex, and in $\chi^2$-divergence or relative entropy when $\mu$ satisfies a Poincaré or a log-Sobolev inequality, which does not require convexity. For ULA with a strongly convex and smooth potential, we show convergence up to a bias that vanishes with the step size. The number of iterations needed for a given accuracy is then polynomial in $n$, so for these targets there is no curse of dimensionality.
-
-These guarantees become useless when $\mu$ has several well-separated modes, because the process moves from one mode to another only exponentially rarely. The distributions of interest in generative modelling are of this type. We construct a different method in Chapter 4.
+Next we will study how long the Langevin diffusion has to run before its law is close to $\mu$. When $\mu$ has a single mode, we will find a number of steps that is polynomial in $n$, so the curse of dimensionality is gone. When $\mu$ has several separated modes, we will find that the process needs an exponentially long time to move from one mode to another.
 
 ### 4. Noising and time reversal
 
-Langevin dynamics is slow when the target has several modes. In this chapter we sample the data distribution $q$ in a different way. We first add Gaussian noise to the data progressively, until its law is close to a standard Gaussian. We then show that this noising process can be reversed in time. The reverse process is again a diffusion, and its drift only requires the scores of the noised data, which we can learn by the regression of Chapter 2. Starting from a Gaussian sample and simulating the reverse process gives a sample from $q$. This is the score-based diffusion model. The process never has to move between separated modes, because the modes appear gradually as the noise is removed.
-
-This holds only with the exact scores and in continuous time. In Chapter 5 we bound the error of the sampler used in practice.
+The distributions of generative modelling have many modes, so we will need a different idea. We will add Gaussian noise to the data progressively, until only a Gaussian is left, and then learn to run this process backwards, from noise to data. This is the diffusion model, the central object of the course.
 
 ### 5. Convergence of diffusion models
 
-In practice we start the reverse process from a standard Gaussian, we use a learned score, and we discretise time. In this chapter we bound the relative entropy between $q$ and the law of the output, with one error term for each of these three approximations. The main tool is Girsanov's theorem, which compares two diffusions with the same noise through the difference of their drifts. If the scores are Lipschitz and the learned score is accurate, the number of steps needed for a given accuracy is polynomial in $n$. We do not assume convexity or a functional inequality on $q$, so the result covers the multimodal distributions for which Langevin dynamics fails.
+We will then prove that diffusion models work. The algorithm used in practice will be shown to need a number of steps that is polynomial in $n$, this time with no assumption on the number of modes.
 
 ### 6. ODE and flow-based generative models
 
-In this chapter we replace the reverse SDE by an ordinary differential equation started from a random initial point. We first derive the probability flow ODE, whose solution has the same law as the reverse SDE at every time. We then go in the other direction. We choose an interpolation between noise and data, and we learn by regression a velocity field whose flow has the same marginal laws as the interpolation. This is flow matching. For Gaussian interpolations the velocity field is an affine function of the score, and one particular choice gives back the probability flow ODE. So diffusion models and flow matching are two cases of the same construction.
-
-All the models so far sample from the data distribution $q$ itself. We cannot yet ask for a sample with a prescribed property. We treat this in Chapter 7.
+We will see that the passage from noise to data can also be made by a deterministic motion, given by an ordinary differential equation. This will lead us to flow matching, which contains diffusion models as a particular case.
 
 ### 7. Guidance and the Doob h-transform
 
-Suppose that each data point comes with a label, such as a class or a text prompt, and that we want samples with a given label. In this chapter we show how to modify a diffusion model to do this. In classifier guidance, we train a classifier that predicts the label from a noised data point, and at each step of the reverse process we add a term that moves the sample in the direction in which the classifier finds the label more likely. We show that the modified process samples exactly from the data with the given label. In classifier-free guidance, no classifier is needed. We train a single score model, both with and without the label, and the difference between its two outputs gives the same term. We explain why these methods are exact through the Doob h-transform, which describes a diffusion conditioned on an event at its final time.
-
-In practice the additional term is multiplied by a scale larger than one, because this is found to give samples that are more typical of the label, at the expense of diversity. This is useful, but it is no longer exact conditional sampling. We show on a Gaussian example that the output is then more concentrated than the distribution one would expect to obtain.
-
-Everything in Chapters 4 to 7 is on $\mathbb{R}^n$ and does not apply to discrete data such as text. We treat this case in Chapter 8, if time allows.
+Up to this point the models return an arbitrary sample from the data distribution. We will learn how to steer them towards a sample with a prescribed label, such as an image that matches a text prompt. This is called guidance.
 
 ### 8. Discrete diffusion models
 
-On a finite state space we have neither Gaussian noise nor the gradient of the log-density. In this chapter we build their analogues on the Boolean cube $\lbrace 0,1\rbrace^n$. We add noise by flipping each coordinate at random times, until the law is close to uniform. The reversed process is again a Markov chain, and its jump rates are ratios of probabilities between neighbouring states. These ratios take the place of the score, and we learn them with a denoising loss. A discrete analogue of Girsanov's theorem bounds the error of the sampler by this loss, as in Chapter 5. Unlike in the continuous case, we can simulate the learned chain exactly. The last section treats masked diffusion, the variant used for sequences of tokens.
+Finally, we will adapt the construction to discrete data such as text, where there is neither Gaussian noise nor a gradient, and we will see what takes the place of the score.
 
 ## Course material
 
@@ -71,6 +57,8 @@ The lecture notes will be made available at the end of the course, so please com
 ## Prerequisites
 
 The course assumes working knowledge in linear algebra, probability, and basic stochastic calculus. Some familiarity with convex optimisation or statistical learning theory will help.
+
+The stochastic calculus used in the course (Brownian motion, the Itô integral, Itô's formula, stochastic differential equations, Girsanov's theorem, generators and invariant measures) is reviewed in the [background slides](lectures/background_slides.pdf) by Jack Daly.
 
 ## Assessment
 
