@@ -9,35 +9,35 @@ We will begin by analysing Langevin dynamics and score matching, and then develo
 
 ### 1. Sampling in high dimension
 
-We begin with the problem of the course, which is to draw samples from a probability distribution $\mu$ on $\mathbb{R}^n$ when $n$ is large, knowing either its density up to a normalising constant or only a collection of samples. We will see that the classical methods stop working in high dimension, because they explore the space without knowing where $\mu$ puts its mass. This will lead us to the score $\nabla\log\mu$, which at every point gives the direction in which the density increases fastest.
+We begin with the problem of the course, which is to draw samples from a probability distribution $\mu$ on $\mathbb{R}^n$ when $n$ is large, knowing either its density up to a normalising constant or only a collection of samples. We will see that the classical methods stop working in high dimension, because they explore the space without knowing where $\mu$ puts its mass, and their cost grows exponentially with $n$. This will lead us to the score $\nabla\log\mu$, which at every point gives the direction in which the density increases fastest. The score does not depend on the normalising constant and can be estimated from samples, so it is available in both settings.
 
 ### 2. Langevin dynamics and the score
 
-We will then use the score to build a first sampling algorithm. Following the score alone would only take us to a maximum of the density, so we will add random noise to the motion, which gives the Langevin diffusion. We will also see how to learn the score when we only have samples from $\mu$.
+We will then use the score to build a first sampling algorithm. Following the score alone would only take us to a maximum of the density, so we will add random noise to the motion, which gives the Langevin diffusion. We will show that the score and the noise balance each other, so that a point distributed according to $\mu$ remains distributed according to $\mu$ at all later times. Discretising time will give an algorithm that only needs evaluations of the score. We will also see how to learn the score by regression when we only have samples from $\mu$.
 
 ### 3. Convergence of the Langevin diffusion and of ULA
 
-Next we will study how long the Langevin diffusion has to run before its law is close to $\mu$. When $\mu$ has a single mode, we will find a number of steps that is polynomial in $n$, so the curse of dimensionality is gone. When $\mu$ has several separated modes, we will find that the process needs an exponentially long time to move from one mode to another.
+Next we will study how long the Langevin diffusion has to run before its law is close to $\mu$, when it is started from an arbitrary distribution. When $\mu$ has a single mode, or more precisely when it is strongly log-concave, we will find that the convergence is exponentially fast and that the number of steps of the algorithm is polynomial in $n$, so the curse of dimensionality is gone. When $\mu$ has several separated modes, we will find that the process needs an exponentially long time to move from one mode to another.
 
 ### 4. Noising and time reversal
 
-The distributions of generative modelling have many modes, so we will need a different idea. We will add Gaussian noise to the data progressively, until only a Gaussian is left, and then learn to run this process backwards, from noise to data. This is the diffusion model, the central object of the course.
+The distributions of generative modelling have many modes, so we will need a different idea. We will add Gaussian noise to the data progressively, until only a Gaussian is left, and then learn to run this process backwards, from noise to data. We will show that the backward process only requires the scores of the noised data, which we can learn as in Chapter 2. This is the diffusion model, the central object of the course. The modes appear gradually as the noise is removed, so the sample never has to travel from one mode to another.
 
 ### 5. Convergence of diffusion models
 
-We will then prove that diffusion models work. The algorithm used in practice will be shown to need a number of steps that is polynomial in $n$, this time with no assumption on the number of modes.
+We will then prove that diffusion models work. The algorithm used in practice starts from a Gaussian, which is only close to the law of the fully noised data, uses a learned score, and moves in discrete time steps. We will bound the error that each of these three approximations introduces. If the score is learned accurately, the number of steps will turn out to be polynomial in $n$, this time with no assumption on the number of modes.
 
 ### 6. ODE and flow-based generative models
 
-We will see that the passage from noise to data can also be made by a deterministic motion, given by an ordinary differential equation. This will lead us to flow matching, which contains diffusion models as a particular case.
+We will see that the passage from noise to data can also be made by a deterministic motion, given by an ordinary differential equation, in which the only randomness is the starting point. This will lead us to flow matching, where we learn directly by regression a velocity field that transports noise to data. Diffusion models will appear as a particular case.
 
 ### 7. Guidance and the Doob h-transform
 
-Up to this point the models return an arbitrary sample from the data distribution. We will learn how to steer them towards a sample with a prescribed label, such as an image that matches a text prompt. This is called guidance.
+Up to this point the models return an arbitrary sample from the data distribution. We will learn how to steer them towards a sample with a prescribed label, such as an image that matches a text prompt. This is called guidance. It adds to the score a term that pushes the sample towards the data with this label, and we will show that the result is exactly a sample from the data conditioned on the label. In practice this term is amplified, and we will see that the sampling is then no longer exact.
 
 ### 8. Discrete diffusion models
 
-Finally, we will adapt the construction to discrete data such as text, where there is neither Gaussian noise nor a gradient, and we will see what takes the place of the score.
+Finally, we will adapt the construction to discrete data such as text, where there is neither Gaussian noise nor a gradient. The noise will change the symbols of a sequence at random times, and we will see that ratios of probabilities between sequences that differ in one symbol take the place of the score.
 
 ## Course material
 
