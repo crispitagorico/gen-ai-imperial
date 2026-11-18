@@ -4,12 +4,12 @@
 # Usage: ./build.sh            (from anywhere; outputs go to lectures/ and exercises/)
 set -euo pipefail
 cd "$(dirname "$0")"
-# Remove every file LaTeX produces except the final PDFs, on success or failure.
+# Preserve .aux and .toc files for cross-document references and subsequent builds.
 # KEEP_AUX=1 ./build.sh keeps the auxiliary files, to inspect the logs.
 cleanup() {
   [ -n "${KEEP_AUX:-}" ] && return
-  find lectures exercises -path lectures/figures -prune -o -type f \( -name '*.aux' -o -name '*.log' -o -name '*.out' \
-    -o -name '*.toc' -o -name '*.lof' -o -name '*.lot' -o -name '*.bbl' -o -name '*.blg' \
+  find lectures exercises -path lectures/figures -prune -o -type f \( -name '*.log' -o -name '*.out' \
+    -o -name '*.lof' -o -name '*.lot' -o -name '*.bbl' -o -name '*.blg' \
     -o -name '*.fls' -o -name '*.fdb_latexmk' -o -name '*.synctex.gz' -o -name '*.nav' \
     -o -name '*.snm' -o -name '*.idx' -o -name '*.ilg' -o -name '*.ind' -o -name '*.thm' \) \
     -exec rm -f {} +
@@ -29,8 +29,12 @@ run() {
 # Notes and exercises cross-reference each other, so alternate a few passes.
 for _ in 1 2 3; do
   run exercises -jobname=exercises exercises.tex
-  run lectures -jobname=lecture_notes main.tex
+  run lectures -jobname=lecture_notes lecture_notes.tex
 done
+# Fast editor build: refresh both documents' cross-references without chapter PDFs.
+if [ "${1:-}" = "--references-only" ]; then
+  exit 0
+fi
 # Appendix A as a standalone document, with the numbering of the notes.
 for _ in 1 2; do
   run lectures -jobname=background background.tex
@@ -38,7 +42,7 @@ done
 # The notes chapter by chapter, with the numbering and cross-references of the full notes.
 for k in 1 2 3 4 5 6 7 8; do
   for _ in 1 2; do
-    run lectures -jobname=chapter$k "\def\chapteronly{$k}\input{main}"
+    run lectures -jobname=chapter$k "\def\chapteronly{$k}\input{lecture_notes}"
   done
 done
 # Chapter sheets and their solutions, using the numbering of the combined sheet.

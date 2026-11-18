@@ -4,44 +4,43 @@ MSc in Mathematical Finance, Imperial College London, 2026–27. Lectures by Cri
 
 ## About the course
 
-Diffusion models are the technology behind today's image, video and audio generation. The course uses  tools from stochastic analysis to provide a mathematical description of how modern generative approaches are used to model a probability distribution.
-We will begin by analysing Langevin dynamics and score matching, and then develop diffusion models, flow matching and guidance as a mathematical theory.
+How can we learn a distribution from data and draw new samples from it? We will use stochastic analysis to build up an answer, from Langevin dynamics and score matching to diffusion models, flow matching, and guidance.
 
 ### 1. Sampling in high dimension
 
-We begin with the problem of the course, which is to draw samples from a probability distribution $\mu$ on $\mathbb{R}^n$ when $n$ is large, knowing either its density up to a normalising constant or only a collection of samples. We will see that the classical methods stop working in high dimension, because they explore the space without knowing where $\mu$ puts its mass, and their cost grows exponentially with $n$. This will lead us to the score $\nabla\log\mu$, which at every point gives the direction in which the density increases fastest. The score does not depend on the normalising constant and can be estimated from samples, so it is available in both settings.
+We will start with two ways a sampling problem can arise. Sometimes we know a density up to a normalising constant. Sometimes we have only observations and want to generate new ones like them. We will use histograms, kernel density estimation, and maximum likelihood to see how a density can be fitted, then look at rejection sampling. In high dimension, nearby observations and accepted proposals can both be rare. This will motivate a sampler that uses the local slope of the density.
 
 ### 2. Langevin dynamics and the score
 
-We will then use the score to build a first sampling algorithm. Following the score alone would only take us to a maximum of the density, so we will add random noise to the motion, which gives the Langevin diffusion. We will show that the score and the noise balance each other, so that a point distributed according to $\mu$ remains distributed according to $\mu$ at all later times. Discretising time will give an algorithm that only needs evaluations of the score. We will also see how to learn the score by regression when we only have samples from $\mu$.
+We will build that sampler using the score $\nabla\log\mu$, which points towards higher density and is independent of the normalising constant. Adding Brownian noise to motion along the score gives the Langevin diffusion. We will show that it preserves the target distribution and see, in a Gaussian example, how discretising it introduces bias. When we have only data, we will learn the score using score matching and denoising score matching.
 
 ### 3. Convergence of the Langevin diffusion and of ULA
 
-Next we will study how long the Langevin diffusion has to run before its law is close to $\mu$, when it is started from an arbitrary distribution. When $\mu$ has a single mode, or more precisely when it is strongly log-concave, we will find that the convergence is exponentially fast and that the number of steps of the algorithm is polynomial in $n$, so the curse of dimensionality is gone. When $\mu$ has several separated modes, we will find that the process needs an exponentially long time to move from one mode to another.
+Once we have a Langevin sampler, we will ask how long to run it and how small to make its steps. We will show that two diffusions driven by the same noise move closer together when the potential is strongly convex. We will also use the Fokker–Planck equation to study convergence in relative entropy and chi-squared divergence. For the discretised sampler, we will separate the error from stopping early, the bias from taking finite steps, and the effect of using an estimated score. Slowly mixing targets with separated modes will motivate a different approach.
 
 ### 4. Noising and time reversal
 
-The distributions of generative modelling have many modes, so we will need a different idea. We will add Gaussian noise to the data progressively, until only a Gaussian is left, and then learn to run this process backwards, from noise to data. We will show that the backward process only requires the scores of the noised data, which we can learn as in Chapter 2. This is the diffusion model, the central object of the course. The modes appear gradually as the noise is removed, so the sample never has to travel from one mode to another.
+To handle separated modes, we will use the Ornstein–Uhlenbeck process to add Gaussian noise gradually. The modes begin to overlap and the distribution approaches a standard Gaussian. We will then derive the equation that runs this process backwards. Its drift depends on the score of the noised data at each time, which we can learn by denoising regression using Tweedie’s formula. This gives a way to generate data by starting from Gaussian noise and progressively removing it.
 
 ### 5. Convergence of diffusion models
 
-We will then prove that diffusion models work. The algorithm used in practice starts from a Gaussian, which is only close to the law of the fully noised data, uses a learned score, and moves in discrete time steps. We will bound the error that each of these three approximations introduces. If the score is learned accurately, the number of steps will turn out to be polynomial in $n$, this time with no assumption on the number of modes.
+The reverse process gives an ideal sampler. We will now ask how close a practical implementation comes to it. The implementation starts from a standard Gaussian, uses an estimated score, and runs in discrete steps. We will use Girsanov’s theorem to connect errors in the drift to errors in the output law. For Lipschitz scores, the resulting bound shows how dimension and desired accuracy affect the number of steps.
 
 ### 6. ODE and flow-based generative models
 
-We will see that the passage from noise to data can also be made by a deterministic motion, given by an ordinary differential equation, in which the only randomness is the starting point. This will lead us to flow matching, where we learn directly by regression a velocity field that transports noise to data. Diffusion models will appear as a particular case.
+We will then ask whether an ODE can make the same journey from noise to data. We will derive the probability flow ODE and show that it matches the reverse diffusion’s distribution at each time when both start from the same law. Flow matching gives another way to build such an ODE. We will interpolate between noise and data and use regression to learn how fast and in which direction points should move.
 
 ### 7. Guidance and the Doob h-transform
 
-Up to this point the models return an arbitrary sample from the data distribution. We will learn how to steer them towards a sample with a prescribed label, such as an image that matches a text prompt. This is called guidance. It adds to the score a term that pushes the sample towards the data with this label, and we will show that the result is exactly a sample from the data conditioned on the label. In practice this term is amplified, and we will see that the sampling is then no longer exact.
+So far the goal has been to generate an unconditional sample. We will now ask how to generate a sample with a specified label. Bayes’ rule gives a correction to the unconditional score, and we will see how classifier and classifier-free guidance obtain it. The Doob $h$-transform explains when the corrected dynamics give exact conditional samples. A Gaussian example will show what can happen when we amplify the correction.
 
 ### 8. Discrete diffusion models
 
-Finally, we will adapt the construction to discrete data such as text, where there is neither Gaussian noise nor a gradient. The noise will change the symbols of a sequence at random times, and we will see that ratios of probabilities between sequences that differ in one symbol take the place of the score.
+Finally, we will adapt noising and reversal to discrete data. On the Boolean cube, random coordinate flips move the distribution towards uniform, and the reverse jump rates depend on probability ratios between neighbouring states. We will learn these ratios with a denoising loss and use uniformisation to simulate the learned chain without discretising time. We will finish with masked diffusion for token sequences.
 
 ## Course material
 
-The lecture notes will be made available at the end of the course, so please come to the lectures and take notes. There is an exercise sheet for each chapter of the notes, with exercises numbered as in the notes, released as the course progresses.
+Please attend lectures and take notes. The lecture notes will be available at the end of the course. Exercise sheets are released chapter by chapter and use the numbering in the notes.
 
 | Week | Chapter                                             | Exercises                                  | Notebook                                                                     |
 | ---- | --------------------------------------------------- | ------------------------------------------ | ---------------------------------------------------------------------------- |
@@ -56,13 +55,13 @@ The lecture notes will be made available at the end of the course, so please com
 
 ## Prerequisites
 
-The course assumes working knowledge in linear algebra, probability, and basic stochastic calculus. Some familiarity with convex optimisation or statistical learning theory will help.
+You should know linear algebra, probability, and basic stochastic calculus. Familiarity with convex optimisation or statistical learning theory is helpful.
 
-The stochastic calculus used in the course (Brownian motion, the Itô integral, Itô's formula, stochastic differential equations, Girsanov's theorem, generators and invariant measures) is reviewed in the [background slides](lectures/background_slides.pdf) by Jack Daly.
+Jack Daly’s [background slides](lectures/background_slides.pdf) review Brownian motion, Itô calculus, stochastic differential equations, Girsanov’s theorem, generators, and invariant measures.
 
 ## Assessment
 
-The course is assessed 100% by an oral exam.
+The oral exam accounts for 100% of the course grade.
 
 ## Resources
 
